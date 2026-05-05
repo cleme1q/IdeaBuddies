@@ -63,7 +63,7 @@ Complete the form below and we will send your request to
 
 <div class="field-group">
 <label for="device">Device <span class="required">*</span></label>
-<input id="device" name="device" type="text" placeholder="e.g., iPhone 15, Pixel 8, Windows 11" autocomplete="off">
+<input id="device" name="device" type="text" placeholder="e.g., iPhone 15, Pixel 8, Windows 11" autocomplete="off" required aria-required="true">
 </div>
 </div>
 
@@ -126,6 +126,14 @@ const formStatus = document.getElementById("form-status");
 
 supportForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  const deviceField = document.getElementById("device");
+  if (!deviceField.value.trim()) {
+    deviceField.setCustomValidity("Please enter the device you are using.");
+    deviceField.reportValidity();
+    deviceField.addEventListener("input", () => deviceField.setCustomValidity(""), { once: true });
+    return;
+  }
 
   formStatus.textContent = "Sending support request...";
   formStatus.className = "form-status visible";
