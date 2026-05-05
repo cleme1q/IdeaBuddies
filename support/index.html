@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support | Buddy Apps</title>
+<meta name="description" content="Contact Buddy Apps support for help with Hangover Buddy or other Buddy Apps products.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header compact-header">
+<nav class="nav">
+<a class="brand" href="index.html">Buddy Apps</a>
+<div class="nav-actions">
+<a class="nav-link" href="index.html#apps">Our Apps</a>
+<a class="nav-link" href="/support/">Support</a>
+</div>
+</nav>
+<section class="page-hero">
+<div class="hero-content">
+<p class="eyebrow">Support</p>
+<h1>How can we help?</h1>
+<p class="hero-text">
+Use this form to send a support request for Hangover Buddy or another Buddy Apps product.
+</p>
+</div>
+</section>
+</header>
+
+<main>
+<section class="support-section">
+<div class="support-copy">
+<h2>Submit a support request</h2>
+<p>
+Complete the form below and we will send your request to
+<a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a>.
+</p>
+<p class="small-note">
+Include your app name, device type, and a short description of the issue so we can respond more effectively.
+</p>
+</div>
+
+<form class="support-form" id="support-form">
+<div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+
+<label for="name">Name</label>
+<input id="name" name="name" type="text" autocomplete="name" required>
+
+<label for="email">Email</label>
+<input id="email" name="email" type="email" autocomplete="email" required>
+
+<label for="app">App</label>
+<select id="app" name="app" required>
+<option value="">Select an app</option>
+<option value="Hangover Buddy">Hangover Buddy</option>
+<option value="Other">Other</option>
+</select>
+
+<label for="device">Device</label>
+<input id="device" name="device" type="text" placeholder="Example: iPhone 15, Pixel 8, iPad" autocomplete="off">
+
+<label for="subject">Subject</label>
+<input id="subject" name="subject" type="text" required>
+
+<label for="message">Support request</label>
+<textarea id="message" name="message" rows="7" required></textarea>
+
+<button class="button form-button" id="submit-button" type="submit">Send support request</button>
+</form>
+</section>
+</main>
+
+<script>
+const SUPPORT_ENDPOINT = "https://ideabuddies.com/api/support";
+
+const supportForm = document.getElementById("support-form");
+const submitButton = document.getElementById("submit-button");
+const formStatus = document.getElementById("form-status");
+
+supportForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  formStatus.textContent = "Sending support request...";
+  formStatus.className = "form-status visible";
+  submitButton.disabled = true;
+
+  const formData = new FormData(supportForm);
+  const payload = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    app: formData.get("app"),
+    device: formData.get("device"),
+    subject: formData.get("subject"),
+    message: formData.get("message"),
+    page: window.location.href
+  };
+
+  try {
+    const response = await fetch(SUPPORT_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error("Request failed");
+    }
+
+    formStatus.textContent = "Support request submitted.";
+    formStatus.className = "form-status visible success";
+    supportForm.reset();
+  } catch (error) {
+    formStatus.textContent = "There was a problem submitting your request. Email support@ideabuddies.com directly if this continues.";
+    formStatus.className = "form-status visible error";
+  } finally {
+    submitButton.disabled = false;
+  }
+});
+</script>
+
+<footer>
+<p>© 2026 Buddy Apps. Built for simple, useful support. <a href="/support/">Support</a></p>
+</footer>
+</body>
+</html>
