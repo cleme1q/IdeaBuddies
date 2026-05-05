@@ -342,8 +342,7 @@ justify-content: flex-end;
 }
 
 .support-card-header,
-.support-aside-header,
-.aside-item {
+.support-aside-header {
   display: flex;
   gap: 16px;
   align-items: flex-start;
@@ -371,41 +370,46 @@ justify-content: flex-end;
   font-weight: 700;
 }
 
-.icon-badge {
-  width: 52px;
-  height: 52px;
+
+.support-section-label {
+  margin-bottom: 10px;
+}
+
+.support-card-header,
+.support-aside-header {
+  margin-bottom: 28px;
+}
+
+.support-card-header h2,
+.support-aside-header h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  margin: 0 0 8px;
+}
+
+.aside-item {
+  padding: 22px 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.aside-item:first-of-type {
+  border-top: 0;
+  padding-top: 6px;
+}
+
+.aside-copy {
+  position: relative;
+  padding-left: 18px;
+}
+
+.aside-copy::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .35em;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 1.25rem;
-  flex: 0 0 52px;
-}
-
-.mail-badge {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-
-.info-badge {
-  background: #ede9fe;
-  color: #6d28d9;
-}
-
-.time-badge {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.list-badge {
-  background: #fef3c7;
-  color: #b45309;
-}
-
-.faq-badge {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #38bdf8;
 }
 
 .form-grid.two-column {
