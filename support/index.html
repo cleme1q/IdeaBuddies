@@ -8,112 +8,114 @@
 <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-<header class="site-header compact-header support-header-shell">
+<header class="site-header support-header">
 <nav class="nav support-nav">
 <a class="brand" href="../index.html">Buddy Apps</a>
-<div class="nav-actions">
-<a class="nav-link support-back-link" href="../index.html#apps">&larr; Back to apps</a>
-</div>
+<a class="nav-link back-link" href="../index.html#apps">← Back to apps</a>
 </nav>
-<section class="page-hero support-hero">
-<div class="hero-content support-hero-content">
+<section class="support-hero">
+<div class="support-hero-content">
 <p class="eyebrow">Support</p>
 <h1>How can we help?</h1>
-<p class="hero-text">Use this form to send a support request for Hangover Buddy or another Buddy Apps product.</p>
+<p class="hero-text">
+Use this form to send a support request for Hangover Buddy or another Buddy Apps product.
+</p>
 </div>
 </section>
 </header>
 
-<main>
-<section class="support-layout">
-<div class="support-card">
-<div class="support-card-header">
+<main class="support-main">
+<section class="support-layout" aria-label="Support request form">
+<div class="support-card support-form-card">
+<div class="support-card-heading">
+<div class="support-icon" aria-hidden="true">✉</div>
 <div>
-<p class="eyebrow support-section-label">Support request</p>
 <h2>Submit a support request</h2>
-<p>Complete the form below and we will send your request to <a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a>.</p>
+<p>
+Complete the form below and we will send your request to
+<a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a>.
+</p>
 </div>
 </div>
 
-<form class="support-form" id="support-form" novalidate>
+<form class="support-form" id="support-form">
 <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
 
-<div class="form-grid two-column">
-<div class="form-field">
-<label for="name">Name <span class="required">*</span></label>
-<input id="name" name="name" type="text" autocomplete="name" placeholder="Your full name" required>
+<div class="form-grid two-columns">
+<div class="field-group">
+<label for="name">Name <span aria-hidden="true">*</span></label>
+<input id="name" name="name" type="text" placeholder="Your full name" autocomplete="name" required>
 </div>
 
-<div class="form-field">
-<label for="email">Email <span class="required">*</span></label>
-<input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+<div class="field-group">
+<label for="email">Email <span aria-hidden="true">*</span></label>
+<input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
 </div>
 
-<div class="form-field">
-<label for="app">App <span class="required">*</span></label>
+<div class="field-group">
+<label for="app">App <span aria-hidden="true">*</span></label>
 <select id="app" name="app" required>
 <option value="">Select an app</option>
 <option value="Hangover Buddy">Hangover Buddy</option>
-<option value="Other">Other</option>
+<option value="Other Buddy Apps product">Other Buddy Apps product</option>
 </select>
 </div>
 
-<div class="form-field">
-<label for="device">Device <span class="required">*</span></label>
-<input id="device" name="device" type="text" placeholder="e.g., iPhone 15, Pixel 8, iPad" autocomplete="off" required aria-required="true">
+<div class="field-group">
+<label for="device">Device</label>
+<input id="device" name="device" type="text" placeholder="e.g., iPhone 15, Pixel 8, Windows 11" autocomplete="off" required aria-required="true">
 </div>
 </div>
 
-<div class="form-field">
-<label for="subject">Subject <span class="required">*</span></label>
+<div class="field-group">
+<label for="subject">Subject <span aria-hidden="true">*</span></label>
 <input id="subject" name="subject" type="text" placeholder="Briefly describe the issue" required>
 </div>
 
-<div class="form-field">
-<label for="message">Message <span class="required">*</span></label>
-<textarea id="message" name="message" rows="7" placeholder="Please provide as much detail as possible so we can help you faster..." required></textarea>
+<div class="field-group">
+<label for="message">Message <span aria-hidden="true">*</span></label>
+<textarea id="message" name="message" rows="7" placeholder="Please provide as much detail as possible so we can help you faster." required></textarea>
 </div>
 
-<div class="form-actions">
+<div class="support-actions">
 <button class="button form-button" id="submit-button" type="submit">Send support request</button>
 <p class="privacy-note">Your information is used only to respond to your request.</p>
 </div>
-
-<div class="support-delivery-note">Support requests are sent to <a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a>.</div>
 </form>
+
+<p class="support-delivery-note">Support requests are sent to <a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a>.</p>
 </div>
 
-<aside class="support-aside">
-<div class="support-aside-header">
+<aside class="support-card support-info-card" aria-label="Support information">
+<h2>Help & info</h2>
+<div class="info-item">
+<div class="info-icon" aria-hidden="true">⏱</div>
 <div>
-<p class="eyebrow support-section-label">Help</p>
-<h2>Help &amp; info</h2>
-</div>
-</div>
-
-<div class="aside-item">
-<div class="aside-copy">
 <h3>Typical response time</h3>
-<p>We usually reply within <strong>1–2 business days.</strong></p>
+<p>We usually reply within <strong>1–2 business days</strong>.</p>
 </div>
 </div>
-
-<div class="aside-item">
-<div class="aside-copy">
+<div class="info-item">
+<div class="info-icon" aria-hidden="true">☑</div>
+<div>
 <h3>What to include</h3>
 <p>Include your app name, device type, and a clear description of the issue.</p>
 </div>
 </div>
-
-<div class="aside-item">
-<div class="aside-copy">
-<h3>Need help fast?</h3>
-<p>If the form has a problem, email us directly at <a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a>.</p>
+<div class="info-item">
+<div class="info-icon" aria-hidden="true">?</div>
+<div>
+<h3>Need a fallback?</h3>
+<p>Email <a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a> directly if the form does not submit.</p>
 </div>
 </div>
 </aside>
 </section>
 </main>
+
+<footer>
+<p>© 2026 Buddy Apps. Built for simple, useful support. <a href="/support/">Support</a></p>
+</footer>
 
 <script>
 const SUPPORT_ENDPOINT = "https://ideabuddies.com/api/support";
@@ -121,35 +123,15 @@ const SUPPORT_ENDPOINT = "https://ideabuddies.com/api/support";
 const supportForm = document.getElementById("support-form");
 const submitButton = document.getElementById("submit-button");
 const formStatus = document.getElementById("form-status");
-const deviceField = document.getElementById("device");
-
-function clearStatus() {
-  formStatus.textContent = "";
-  formStatus.className = "form-status";
-}
-
-function validateForm() {
-  clearStatus();
-
-  if (!deviceField.value.trim()) {
-    deviceField.setCustomValidity("Please enter the device you are using.");
-  } else {
-    deviceField.setCustomValidity("");
-  }
-
-  return supportForm.reportValidity();
-}
-
-deviceField.addEventListener("input", () => {
-  if (deviceField.value.trim()) {
-    deviceField.setCustomValidity("");
-  }
-});
 
 supportForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  if (!validateForm()) {
+  const deviceField = document.getElementById("device");
+  if (!deviceField.value.trim()) {
+    deviceField.setCustomValidity("Please enter the device you are using.");
+    deviceField.reportValidity();
+    deviceField.addEventListener("input", () => deviceField.setCustomValidity(""), { once: true });
     return;
   }
 
@@ -162,7 +144,7 @@ supportForm.addEventListener("submit", async (event) => {
     name: formData.get("name"),
     email: formData.get("email"),
     app: formData.get("app"),
-    device: formData.get("device").trim(),
+    device: formData.get("device"),
     subject: formData.get("subject"),
     message: formData.get("message"),
     page: window.location.href
@@ -171,7 +153,9 @@ supportForm.addEventListener("submit", async (event) => {
   try {
     const response = await fetch(SUPPORT_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(payload)
     });
 
@@ -190,9 +174,5 @@ supportForm.addEventListener("submit", async (event) => {
   }
 });
 </script>
-
-<footer>
-<p>© 2026 Buddy Apps. Built for simple, useful support. <a href="/support/">Support</a></p>
-</footer>
 </body>
 </html>
