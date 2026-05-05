@@ -328,6 +328,7 @@ justify-content: flex-end;
 
 .support-layout {
   display: grid;
+  padding-top: 2px;
   grid-template-columns: minmax(0, 1.75fr) minmax(280px, .75fr);
   gap: 28px;
   align-items: start;
@@ -335,9 +336,11 @@ justify-content: flex-end;
 
 .support-card,
 .support-aside {
-  background: white;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 28px;
   padding: 34px;
+  overflow: hidden;
   box-shadow: 0 24px 70px rgba(15,23,42,.10);
 }
 
