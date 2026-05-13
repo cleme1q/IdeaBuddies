@@ -147,13 +147,17 @@ supportForm.addEventListener("submit", async (event) => {
   submitButton.disabled = true;
 
   const formData = new FormData(supportForm);
+  const device = String(formData.get("device") || "").trim();
+  const message = String(formData.get("message") || "").trim();
   const payload = {
     name: formData.get("name"),
     email: formData.get("email"),
     app: formData.get("app"),
-    device: formData.get("device"),
+    device,
     subject: formData.get("subject"),
-    message: formData.get("message"),
+    message: `Device: ${device}
+
+${message}`,
     page: window.location.href
   };
 
