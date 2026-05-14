@@ -1,0 +1,5 @@
+http://ideabuddies.com/* https://ideabuddies.com/:splat 301
+https://www.ideabuddies.com/* https://ideabuddies.com/:splat 301
+/index.html https://ideabuddies.com/ 301
+/support/index.html https://ideabuddies.com/support/ 301
+/privacy/index.html https://ideabuddies.com/privacy/ 301
