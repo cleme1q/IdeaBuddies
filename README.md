@@ -25,3 +25,8 @@ Hangover Buddy reminds someone who is drinking alcohol to follow practical best 
 Replace these files while keeping the same names:
 - `images/hero.jpg`
 - `images/hangover-buddy.png`
+
+
+## Search indexing
+
+This site includes `robots.txt` and `sitemap.xml` at the domain root. After deploying, submit `https://ideabuddies.com/sitemap.xml` in Google Search Console and use URL Inspection > Request indexing for `https://ideabuddies.com/`, `https://ideabuddies.com/support/`, and `https://ideabuddies.com/privacy/`.

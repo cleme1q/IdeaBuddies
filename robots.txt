@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /support.html
 
 Sitemap: https://ideabuddies.com/sitemap.xml
