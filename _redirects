@@ -1,5 +1,12 @@
+# Canonical host and HTTPS redirects
 http://ideabuddies.com/* https://ideabuddies.com/:splat 301
+http://www.ideabuddies.com/* https://ideabuddies.com/:splat 301
 https://www.ideabuddies.com/* https://ideabuddies.com/:splat 301
-/index.html https://ideabuddies.com/ 301
-/support/index.html https://ideabuddies.com/support/ 301
-/privacy/index.html https://ideabuddies.com/privacy/ 301
+
+# Remove index.html alternates from Google's crawlable URL set
+/index.html / 301
+/support/index.html /support/ 301
+/privacy/index.html /privacy/ 301
+
+# Legacy support page; canonical page is /support/
+/support.html /support/ 301
