@@ -281,11 +281,28 @@ recipeTextField.addEventListener("input", () => {
   recipeTextCount.textContent = String(recipeTextField.value.length);
 });
 
-function readFileAsDataUrl(file) {
+function fileToPhotoPayload(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(reader.error || new Error("Unable to read photo"));
+
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        reject(new Error(`Unable to read ${file.name}`));
+        return;
+      }
+
+      resolve({
+        name: file.name,
+        type: file.type || "application/octet-stream",
+        size: file.size,
+        data: reader.result
+      });
+    };
+
+    reader.onerror = () => {
+      reject(reader.error || new Error(`Unable to read ${file.name}`));
+    };
+
     reader.readAsDataURL(file);
   });
 }
@@ -346,12 +363,7 @@ ${additionalInfo.recipeText}`);
   let photos = [];
   if (selectedTopic === "Photo Conversion") {
     try {
-      photos = await Promise.all(selectedPhotos.map(async (file) => ({
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        data: await readFileAsDataUrl(file)
-      })));
+      photos = await Promise.all(selectedPhotos.map(fileToPhotoPayload));
       additionalInfo.photoCount = photos.length;
       additionalLines.push(`Photos attached: ${photos.map((photo) => photo.name).join(", ")}`);
     } catch (error) {
