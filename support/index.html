@@ -21,7 +21,7 @@
 <p class="eyebrow">Support</p>
 <h1>How can we help?</h1>
 <p class="hero-text">
-Use this form to send a support request for Hangover Buddy or another Buddy Apps product.
+Choose a product to open the appropriate support form.
 </p>
 </div>
 </section>
@@ -30,10 +30,19 @@ Use this form to send a support request for Hangover Buddy or another Buddy Apps
 <main class="support-main">
 <section class="support-layout" aria-label="Support request form">
 <div class="support-card support-form-card">
+<div class="field-group product-support-selector">
+<label for="product-selector">Product</label>
+<select id="product-selector" aria-describedby="product-link-help">
+<option value="hangover-buddy">Hangover Buddy</option>
+<option value="thermovert">Thermovert</option>
+</select>
+<p id="product-link-help" class="privacy-note">Direct links: <a href="/support/?product=hangover-buddy#support-form">Hangover Buddy support</a> · <a href="/support/?product=thermovert#support-form">Thermovert support</a>.</p>
+</div>
+
 <div class="support-card-heading">
 <div class="support-icon" aria-hidden="true">✉</div>
 <div>
-<h2>Submit a support request</h2>
+<h2 id="support-form-title">Hangover Buddy support request</h2>
 <p>
 Complete the form below and we will send your request to
 <a href="mailto:support@ideabuddies.com">support@ideabuddies.com</a>.
@@ -55,19 +64,59 @@ Complete the form below and we will send your request to
 <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
 </div>
 
-<div class="field-group">
-<label for="app">App <span aria-hidden="true">*</span></label>
-<select id="app" name="app" required>
-<option value="">Select an app</option>
-<option value="Hangover Buddy">Hangover Buddy</option>
-<option value="Thermovert">Thermovert</option>
-<option value="Other Buddy Apps product">Other Buddy Apps product</option>
-</select>
-</div>
+<input id="app" name="app" type="hidden" value="Hangover Buddy">
 
 <div class="field-group">
 <label for="device">Device <span class="required">*</span></label>
 <input id="device" name="device" type="text" placeholder="e.g., iPhone 15, Pixel 8, Windows 11" autocomplete="off" required aria-required="true">
+</div>
+</div>
+
+<div class="field-group" id="thermovert-topic-group" hidden>
+<label for="topic">Topic <span aria-hidden="true">*</span></label>
+<select id="topic" name="topic">
+<option value="">Select a topic</option>
+<option value="URL Conversion">URL Conversion</option>
+<option value="Text Conversion">Text Conversion</option>
+<option value="Photo Conversion">Photo Conversion</option>
+<option value="Cookidoo Connection">Cookidoo Connection</option>
+</select>
+</div>
+
+<div id="topic-details" hidden>
+<div class="field-group topic-detail" id="url-conversion-fields" hidden>
+<label for="recipe-url">Recipe URL <span aria-hidden="true">*</span></label>
+<input id="recipe-url" name="recipe_url" type="url" placeholder="https://example.com/recipe" inputmode="url">
+</div>
+
+<div class="field-group topic-detail" id="text-conversion-fields" hidden>
+<label for="recipe-text">Recipe text <span aria-hidden="true">*</span></label>
+<textarea id="recipe-text" name="recipe_text" rows="10" maxlength="2000" placeholder="Paste the recipe text here (maximum 2,000 characters)."></textarea>
+<p class="privacy-note"><span id="recipe-text-count">0</span>/2000 characters</p>
+</div>
+
+<div class="field-group topic-detail" id="photo-conversion-fields" hidden>
+<label for="recipe-photos">Recipe photos <span aria-hidden="true">*</span></label>
+<input id="recipe-photos" name="recipe_photos" type="file" accept="image/*" multiple>
+<p class="privacy-note">Upload up to 5 photos. Each photo must be 5 MB or smaller.</p>
+</div>
+
+<div class="topic-detail" id="cookidoo-connection-fields" hidden>
+<div class="field-group">
+<label for="cookidoo-url">Cookidoo web address</label>
+<input id="cookidoo-url" name="cookidoo_url" type="url" placeholder="https://cookidoo.com/..." inputmode="url">
+<p class="privacy-note">Enter the Cookidoo web address you use, when applicable.</p>
+</div>
+<div class="form-grid two-columns">
+<div class="field-group">
+<label for="cookidoo-country">Country <span aria-hidden="true">*</span></label>
+<input id="cookidoo-country" name="cookidoo_country" type="text" placeholder="e.g., United States" autocomplete="country-name">
+</div>
+<div class="field-group">
+<label for="cookidoo-language">Language <span aria-hidden="true">*</span></label>
+<input id="cookidoo-language" name="cookidoo_language" type="text" placeholder="e.g., English" autocomplete="language">
+</div>
+</div>
 </div>
 </div>
 
@@ -142,6 +191,97 @@ const SUPPORT_ENDPOINT = "https://ideabuddies.com/api/support";
 const supportForm = document.getElementById("support-form");
 const submitButton = document.getElementById("submit-button");
 const formStatus = document.getElementById("form-status");
+const productSelector = document.getElementById("product-selector");
+const appField = document.getElementById("app");
+const topicGroup = document.getElementById("thermovert-topic-group");
+const topicField = document.getElementById("topic");
+const topicDetails = document.getElementById("topic-details");
+const formTitle = document.getElementById("support-form-title");
+const recipeUrlField = document.getElementById("recipe-url");
+const recipeTextField = document.getElementById("recipe-text");
+const recipeTextCount = document.getElementById("recipe-text-count");
+const recipePhotosField = document.getElementById("recipe-photos");
+const cookidooUrlField = document.getElementById("cookidoo-url");
+const cookidooCountryField = document.getElementById("cookidoo-country");
+const cookidooLanguageField = document.getElementById("cookidoo-language");
+
+const TOPIC_FIELD_GROUPS = {
+  "URL Conversion": document.getElementById("url-conversion-fields"),
+  "Text Conversion": document.getElementById("text-conversion-fields"),
+  "Photo Conversion": document.getElementById("photo-conversion-fields"),
+  "Cookidoo Connection": document.getElementById("cookidoo-connection-fields")
+};
+
+const PRODUCT_CONFIG = {
+  "hangover-buddy": { name: "Hangover Buddy", title: "Hangover Buddy support request" },
+  "thermovert": { name: "Thermovert", title: "Thermovert support request" }
+};
+
+function normalizeProduct(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (["thermovert", "thermo-vert"].includes(normalized)) return "thermovert";
+  if (["hangover-buddy", "hangoverbuddy", "hangover buddy"].includes(normalized)) return "hangover-buddy";
+  return "hangover-buddy";
+}
+
+function updateTopicFields() {
+  const selectedTopic = topicField.value;
+  topicDetails.hidden = !selectedTopic;
+
+  Object.entries(TOPIC_FIELD_GROUPS).forEach(([topic, group]) => {
+    group.hidden = topic !== selectedTopic;
+  });
+
+  recipeUrlField.required = selectedTopic === "URL Conversion";
+  recipeTextField.required = selectedTopic === "Text Conversion";
+  recipePhotosField.required = selectedTopic === "Photo Conversion";
+  cookidooCountryField.required = selectedTopic === "Cookidoo Connection";
+  cookidooLanguageField.required = selectedTopic === "Cookidoo Connection";
+}
+
+function setProduct(product, updateUrl = true) {
+  const key = normalizeProduct(product);
+  const config = PRODUCT_CONFIG[key];
+  const isThermovert = key === "thermovert";
+
+  productSelector.value = key;
+  appField.value = config.name;
+  formTitle.textContent = config.title;
+  topicGroup.hidden = !isThermovert;
+  topicField.required = isThermovert;
+  if (!isThermovert) topicField.value = "";
+  updateTopicFields();
+
+  if (updateUrl) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("product", key);
+    url.hash = "support-form";
+    window.history.replaceState({}, "", url);
+  }
+}
+
+const initialUrl = new URL(window.location.href);
+const initialProduct = initialUrl.searchParams.get("product") || initialUrl.hash.replace(/^#/, "");
+setProduct(initialProduct, false);
+
+productSelector.addEventListener("change", () => {
+  setProduct(productSelector.value, true);
+  supportForm.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+topicField.addEventListener("change", updateTopicFields);
+recipeTextField.addEventListener("input", () => {
+  recipeTextCount.textContent = String(recipeTextField.value.length);
+});
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("Unable to read photo"));
+    reader.readAsDataURL(file);
+  });
+}
 
 supportForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -154,6 +294,22 @@ supportForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  const selectedTopic = topicField.value;
+  const selectedPhotos = Array.from(recipePhotosField.files || []);
+  if (selectedTopic === "Photo Conversion") {
+    if (selectedPhotos.length > 5) {
+      formStatus.textContent = "Please select no more than 5 photos.";
+      formStatus.className = "form-status visible error";
+      return;
+    }
+    const oversizedPhoto = selectedPhotos.find((file) => file.size > 5 * 1024 * 1024);
+    if (oversizedPhoto) {
+      formStatus.textContent = `${oversizedPhoto.name} is larger than 5 MB.`;
+      formStatus.className = "form-status visible error";
+      return;
+    }
+  }
+
   formStatus.textContent = "Sending support request...";
   formStatus.className = "form-status visible";
   submitButton.disabled = true;
@@ -161,15 +317,56 @@ supportForm.addEventListener("submit", async (event) => {
   const formData = new FormData(supportForm);
   const device = String(formData.get("device") || "").trim();
   const message = String(formData.get("message") || "").trim();
+  const additionalLines = [];
+  const additionalInfo = {};
+
+  if (selectedTopic === "URL Conversion") {
+    additionalInfo.recipeUrl = recipeUrlField.value.trim();
+    additionalLines.push(`Recipe URL: ${additionalInfo.recipeUrl}`);
+  } else if (selectedTopic === "Text Conversion") {
+    additionalInfo.recipeText = recipeTextField.value.trim();
+    additionalLines.push(`Recipe text:
+${additionalInfo.recipeText}`);
+  } else if (selectedTopic === "Cookidoo Connection") {
+    additionalInfo.cookidooUrl = cookidooUrlField.value.trim();
+    additionalInfo.country = cookidooCountryField.value.trim();
+    additionalInfo.language = cookidooLanguageField.value.trim();
+    if (additionalInfo.cookidooUrl) additionalLines.push(`Cookidoo URL: ${additionalInfo.cookidooUrl}`);
+    additionalLines.push(`Country: ${additionalInfo.country}`);
+    additionalLines.push(`Language: ${additionalInfo.language}`);
+  }
+
+  let photos = [];
+  if (selectedTopic === "Photo Conversion") {
+    try {
+      photos = await Promise.all(selectedPhotos.map(async (file) => ({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        data: await readFileAsDataUrl(file)
+      })));
+      additionalInfo.photoCount = photos.length;
+      additionalLines.push(`Photos attached: ${photos.map((photo) => photo.name).join(", ")}`);
+    } catch (error) {
+      formStatus.textContent = "One or more photos could not be read. Please try again.";
+      formStatus.className = "form-status visible error";
+      submitButton.disabled = false;
+      return;
+    }
+  }
+
   const payload = {
     name: formData.get("name"),
     email: formData.get("email"),
     app: formData.get("app"),
+    topic: selectedTopic || "",
     device,
     subject: formData.get("subject"),
-    message: `Device: ${device}
+    message: `${selectedTopic ? `Topic: ${selectedTopic}\n` : ""}Device: ${device}${additionalLines.length ? `\n${additionalLines.join("\n")}` : ""}
 
 ${message}`,
+    additionalInfo,
+    photos,
     page: window.location.href
   };
 
@@ -188,7 +385,10 @@ ${message}`,
 
     formStatus.textContent = "Support request submitted.";
     formStatus.className = "form-status visible success";
+    const selectedProduct = productSelector.value;
     supportForm.reset();
+    recipeTextCount.textContent = "0";
+    setProduct(selectedProduct, false);
   } catch (error) {
     formStatus.textContent = "There was a problem submitting your request. Email support@ideabuddies.com directly if this continues.";
     formStatus.className = "form-status visible error";
