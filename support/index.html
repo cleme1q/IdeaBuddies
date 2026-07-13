@@ -224,8 +224,11 @@ function normalizeProduct(value) {
 }
 
 function updateTopicFields() {
-  const selectedTopic = topicField.value;
-  topicDetails.hidden = !selectedTopic;
+  const isThermovert = productSelector.value === "thermovert";
+  const selectedTopic = isThermovert ? topicField.value : "";
+  topicGroup.hidden = !isThermovert;
+  topicField.disabled = !isThermovert;
+  topicDetails.hidden = !isThermovert || !selectedTopic;
 
   Object.entries(TOPIC_FIELD_GROUPS).forEach(([topic, group]) => {
     group.hidden = topic !== selectedTopic;
@@ -248,6 +251,7 @@ function setProduct(product, updateUrl = true) {
   formTitle.textContent = config.title;
   topicGroup.hidden = !isThermovert;
   topicField.required = isThermovert;
+  topicField.disabled = !isThermovert;
   if (!isThermovert) topicField.value = "";
   updateTopicFields();
 
