@@ -14,6 +14,28 @@
   display: none !important;
 }
 </style>
+
+<style>
+.selected-photo-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+.selected-photo-item {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+}
+.selected-photo-remove {
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  padding: 0.25rem 0.55rem;
+}
+</style>
 </head>
 <body>
 <header class="site-header support-header">
@@ -102,7 +124,9 @@ Complete the form below and we will send your request to
 <div class="field-group topic-detail" id="photo-conversion-fields" hidden>
 <label for="recipe-photos">Recipe photos <span aria-hidden="true">*</span></label>
 <input id="recipe-photos" name="recipe_photos" type="file" accept="image/*" multiple>
-<p class="privacy-note">Upload up to 5 photos. Each photo must be 5 MB or smaller.</p>
+<p class="privacy-note">Add up to 5 photos. You can select several at once or add them in separate selections. Each photo must be 5 MB or smaller.</p>
+<div id="selected-photo-summary" class="privacy-note" aria-live="polite">No photos selected.</div>
+<ul id="selected-photo-list" class="selected-photo-list"></ul>
 </div>
 
 <div class="topic-detail" id="cookidoo-connection-fields" hidden>
@@ -205,6 +229,9 @@ const recipeUrlField = document.getElementById("recipe-url");
 const recipeTextField = document.getElementById("recipe-text");
 const recipeTextCount = document.getElementById("recipe-text-count");
 const recipePhotosField = document.getElementById("recipe-photos");
+const selectedPhotoSummary = document.getElementById("selected-photo-summary");
+const selectedPhotoList = document.getElementById("selected-photo-list");
+let selectedPhotoFiles = [];
 const cookidooUrlField = document.getElementById("cookidoo-url");
 const cookidooCountryField = document.getElementById("cookidoo-country");
 const cookidooLanguageField = document.getElementById("cookidoo-language");
@@ -241,7 +268,9 @@ function updateTopicFields() {
 
   recipeUrlField.required = selectedTopic === "URL Conversion";
   recipeTextField.required = selectedTopic === "Text Conversion";
-  recipePhotosField.required = selectedTopic === "Photo Conversion";
+  // Photo selection is validated against selectedPhotoFiles because the picker
+  // is cleared after each selection to allow users to add more files.
+  recipePhotosField.required = false;
   cookidooCountryField.required = selectedTopic === "Cookidoo Connection";
   cookidooLanguageField.required = selectedTopic === "Cookidoo Connection";
 }
@@ -281,6 +310,70 @@ recipeTextField.addEventListener("input", () => {
   recipeTextCount.textContent = String(recipeTextField.value.length);
 });
 
+
+function photoKey(file) {
+  return `${file.name}:${file.size}:${file.lastModified}`;
+}
+
+function renderSelectedPhotos() {
+  selectedPhotoList.textContent = "";
+  selectedPhotoSummary.textContent = selectedPhotoFiles.length
+    ? `${selectedPhotoFiles.length} of 5 photos selected.`
+    : "No photos selected.";
+
+  selectedPhotoFiles.forEach((file, index) => {
+    const item = document.createElement("li");
+    item.className = "selected-photo-item";
+
+    const name = document.createElement("span");
+    name.textContent = `${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.className = "selected-photo-remove";
+    removeButton.textContent = "Remove";
+    removeButton.setAttribute("aria-label", `Remove ${file.name}`);
+    removeButton.addEventListener("click", () => {
+      selectedPhotoFiles.splice(index, 1);
+      renderSelectedPhotos();
+    });
+
+    item.append(name, removeButton);
+    selectedPhotoList.appendChild(item);
+  });
+}
+
+recipePhotosField.addEventListener("change", () => {
+  const newFiles = Array.from(recipePhotosField.files || []);
+  const existingKeys = new Set(selectedPhotoFiles.map(photoKey));
+
+  for (const file of newFiles) {
+    if (selectedPhotoFiles.length >= 5) {
+      formStatus.textContent = "A maximum of 5 photos may be attached.";
+      formStatus.className = "form-status visible error";
+      break;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      formStatus.textContent = `${file.name} is larger than 5 MB and was not added.`;
+      formStatus.className = "form-status visible error";
+      continue;
+    }
+
+    const key = photoKey(file);
+    if (!existingKeys.has(key)) {
+      selectedPhotoFiles.push(file);
+      existingKeys.add(key);
+    }
+  }
+
+  // Allow selecting the same file again after it has been removed.
+  recipePhotosField.value = "";
+  renderSelectedPhotos();
+});
+
+renderSelectedPhotos();
+
 function fileToPhotoPayload(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -319,8 +412,13 @@ supportForm.addEventListener("submit", async (event) => {
   }
 
   const selectedTopic = topicField.value;
-  const selectedPhotos = Array.from(recipePhotosField.files || []);
+  const selectedPhotos = [...selectedPhotoFiles];
   if (selectedTopic === "Photo Conversion") {
+    if (selectedPhotos.length === 0) {
+      formStatus.textContent = "Please add at least one photo.";
+      formStatus.className = "form-status visible error";
+      return;
+    }
     if (selectedPhotos.length > 5) {
       formStatus.textContent = "Please select no more than 5 photos.";
       formStatus.className = "form-status visible error";
@@ -406,6 +504,8 @@ ${message}`,
     formStatus.className = "form-status visible success";
     const selectedProduct = productSelector.value;
     supportForm.reset();
+    selectedPhotoFiles = [];
+    renderSelectedPhotos();
     recipeTextCount.textContent = "0";
     setProduct(selectedProduct, false);
   } catch (error) {
